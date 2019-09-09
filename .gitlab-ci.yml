@@ -10,25 +10,24 @@ services:
 variables:
   DOCKER_HOST: tcp://docker:2375/
   DOCKER_DRIVER: overlay2
-  REGISTRY_NAME: registry.gitlab.com
-  CONTAINER_IMAGE_NAME: registry.gitlab.com/askme.kz/api/main
+  REGISTRY_NAME: git.chocodev.kz:4567
+  CONTAINER_IMAGE_NAME: git.chocodev.kz:4567/chocofood/seed
   CONTAINER_CURRENT_IMAGE_NAME: $CONTAINER_IMAGE_NAME:$CI_COMMIT_REF_SLUG
 
 
-.build_askme: &build_askme
+.build_project: &build_project
   tags:
     - docker
   stage: build
   script:
-    #    - echo "build skipped"
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $REGISTRY_NAME
     - docker build -t $CONTAINER_CURRENT_IMAGE_NAME .
     - docker push $CONTAINER_CURRENT_IMAGE_NAME
 
 build:
-  <<: *build_askme
+  <<: *build_project
 
-.test_askme: &test_askme
+.test_project: &test_project
   tags:
     - docker
   stage: test
@@ -43,9 +42,9 @@ build:
     - docker-compose up --abort-on-container-exit && docker-compose down
 
 test:
-  <<: *test_askme
+  <<: *test_project
 
-.deploy_askme: &deploy_askme
+.deploy_project: &deploy_project
   tags:
     - docker
   stage: deploy
@@ -64,6 +63,6 @@ deploy_prod:
     DEPLOY_HOST: "vbnm.gq"
     DEPLOY_PATH: "/srv/askme"
     LOCAL_PATH: "deploy/prod/*"
-  <<: *deploy_askme
+  <<: *deploy_project
   only:
     - master
