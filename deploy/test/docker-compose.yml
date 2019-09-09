@@ -7,7 +7,7 @@ services:
     logging:
       driver: none
     environment:
-      POSTGRES_DB: askme
+      POSTGRES_DB: db
       POSTGRES_USER: user
       POSTGRES_PASSWORD: pass
 

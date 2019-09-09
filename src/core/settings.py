@@ -10,7 +10,7 @@ from core.helpers.default_apps import DEFAULT_APPS
 from core.helpers.env_variables import default_env_variables
 from core.helpers.i18n_settings import DEFAULT_LOCALE_PATHS, DEFAULT_LANGUAGES
 from core.helpers.middlewares import DEFAULT_MIDDLEWARES
-from core.helpers.rest_framework_settings import REST_FRAMEWORK_SETTINGS, DEFAULT_SIMPLE_JWT
+from core.helpers.rest_framework_settings import REST_FRAMEWORK_SETTINGS
 from core.helpers.storages import STORAGES, DEFAULT_STORAGE
 from core.helpers.templates import DEFAULT_TEMPLATES
 from core.helpers.validators import DEFAULT_VALIDATORS
@@ -30,7 +30,7 @@ INSTALLED_APPS = DEFAULT_APPS
 MIDDLEWARE = DEFAULT_MIDDLEWARES
 ROOT_URLCONF: str = 'core.urls'
 TEMPLATES = DEFAULT_TEMPLATES
-WSGI_APPLICATION: str = 'askme.wsgi.application'
+WSGI_APPLICATION: str = 'core.wsgi.application'
 DATABASES = MappingProxyType({'default': env.db()})
 AUTH_PASSWORD_VALIDATORS = DEFAULT_VALIDATORS
 # Security
@@ -58,12 +58,8 @@ CORS_ALLOW_HEADERS: Tuple = default_headers
 CORS_ALLOW_CREDENTIALS: bool = True
 # Rest framework
 REST_FRAMEWORK = REST_FRAMEWORK_SETTINGS
-# JWT
-SIMPLE_JWT = DEFAULT_SIMPLE_JWT
 # Storage
 DEFAULT_FILE_STORAGE: str = STORAGES.get(env.str(var='WHERE_TO_KEEP_MEDIA'), DEFAULT_STORAGE)
-DATA_UPLOAD_MAX_MEMORY_SIZE: int = 1048576 * 40
-ALLOWED_FILE_SIZE: int = 10
 # AWS S3
 AWS_ACCESS_KEY_ID = env.str(var='AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = env.str(var='AWS_SECRET_ACCESS_KEY')
@@ -92,10 +88,6 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 EMAIL_HOST_PASSWORD = env.str(var='EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = env.bool(var='EMAIL_USE_TLS')
 EMAIL_USE_SSL = env.bool(var='EMAIL_USE_SSL')
-# Host
-HOST_URL: str = env.str(var='HOST_URL')
-# Auth settings
-CLIENT_URL: str = env.str(var='CLIENT_URL')
 # Debug toolbar
 if DEBUG:
     from core.helpers.debug_settings import (

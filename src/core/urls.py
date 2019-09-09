@@ -7,9 +7,6 @@ from core.settings import DEBUG, MEDIA_URL, MEDIA_ROOT
 urlpatterns = i18n_patterns(
     path(route='admin/', view=admin.site.urls),
     path(route='admin/silk/', view=include('silk.urls')),
-    path(route='api/', view=include('authorization.urls')),
-    path(route='api/', view=include('question.urls')),
-    path(route='api/', view=include('payment.urls')),
 )
 
 if DEBUG:
