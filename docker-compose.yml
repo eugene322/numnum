@@ -1,0 +1,62 @@
+version: '3'
+
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:alpine
+    logging:
+      driver: none
+#    volumes:
+#      - ./postgres:/var/lib/postgresql/data:rw
+#    ports:
+#      - 5432:5432
+    environment:
+      POSTGRES_DB: db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:alpine
+    logging:
+      driver: none
+#    volumes:
+#      - ./rabbitmq:/var/lib/rabbitmq:rw
+#    ports:
+#      - 15672:15672
+#      - 5672:5672
+    environment:
+      - RABBITMQ_DEFAULT_USER=user
+      - RABBITMQ_DEFAULT_PASS=pass
+
+  django:
+    container_name: django
+    build: ./
+    entrypoint: ./entrypoint.sh
+    volumes:
+      - ./src:/src:rw
+      - ./.env:/src/askme/helpers/.env
+    depends_on:
+      - postgres
+    ports:
+      - 8000:8000
+#    logging:
+#      driver: none
+    environment:
+      MODE: DEV
+      test: "pytest -v --cov . --cov-report term-missing --cov-fail-under 100 --flake8 -n 6 --no-migrations --reuse-db"
+
+  celery:
+    container_name: celery
+    build: ./
+    entrypoint: ./entrypoint.sh
+    volumes:
+      - ./src:/src:rw
+      - ./.env:/src/askme/helpers/.env
+    depends_on:
+      - postgres
+      - rabbitmq
+#    logging:
+#      driver: none
+    environment:
+      MODE: CELERY
