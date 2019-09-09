@@ -49,11 +49,11 @@ test:
     - docker
   stage: deploy
   before_script:
-    - echo http://mirror.yandex.ru/mirrors/alpine/v3.10/main > /etc/apk/repositories
-    - echo http://mirror.yandex.ru/mirrors/alpine/v3.10/community >> /etc/apk/repositories
-    - 'which ssh-agent || ( apk update && apk add -qq openssh )'
-    - eval $(ssh-agent -s) && echo "$SSH_PRIVATE_KEY" | ssh-add - && mkdir -p ~/.ssh
-    - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+#    - echo http://mirror.yandex.ru/mirrors/alpine/v3.10/main > /etc/apk/repositories
+#    - echo http://mirror.yandex.ru/mirrors/alpine/v3.10/community >> /etc/apk/repositories
+#    - 'which ssh-agent || ( apk update && apk add -qq openssh )'
+#    - eval $(ssh-agent -s) && echo "$SSH_PRIVATE_KEY" | ssh-add - && mkdir -p ~/.ssh
+#    - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
   script:
     - echo "deploy skipped"
 #    - scp -rp $LOCAL_PATH runner@$DEPLOY_HOST:$DEPLOY_PATH
