@@ -1,4 +1,3 @@
-from datetime import timedelta
 from types import MappingProxyType
 
 REST_FRAMEWORK_SETTINGS = MappingProxyType({
