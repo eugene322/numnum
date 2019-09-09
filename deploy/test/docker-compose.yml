@@ -22,10 +22,10 @@ services:
 
   django:
     container_name: django
-    image: registry.gitlab.com/askme.kz/api/main:${CI_COMMIT_REF_SLUG}
+    image: git.chocodev.kz:4567/chocofood/seed:${CI_COMMIT_REF_SLUG}
     entrypoint: ./entrypoint.sh
     volumes:
-      - ./django.test.env:/src/askme/helpers/.env
+      - ./django.test.env:/src/core/helpers/.env
     depends_on:
       - postgres
       - rabbitmq
@@ -34,10 +34,10 @@ services:
 
   celery:
     container_name: celery
-    image: registry.gitlab.com/askme.kz/api/main:${CI_COMMIT_REF_SLUG}
+    image: git.chocodev.kz:4567/chocofood/seed:${CI_COMMIT_REF_SLUG}
     entrypoint: ./entrypoint.sh
     volumes:
-      - ./celery.test.env:/src/askme/helpers/.env
+      - ./celery.test.env:/src/core/helpers/.env
     depends_on:
       - postgres
       - rabbitmq
