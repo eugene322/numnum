@@ -55,8 +55,9 @@ test:
     - eval $(ssh-agent -s) && echo "$SSH_PRIVATE_KEY" | ssh-add - && mkdir -p ~/.ssh
     - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
   script:
-    - scp -rp $LOCAL_PATH runner@$DEPLOY_HOST:$DEPLOY_PATH
-    - ssh runner@$DEPLOY_HOST "cd $DEPLOY_PATH && docker-compose pull && docker-compose down && docker-compose up -d"
+    - echo "deploy skipped"
+#    - scp -rp $LOCAL_PATH runner@$DEPLOY_HOST:$DEPLOY_PATH
+#    - ssh runner@$DEPLOY_HOST "cd $DEPLOY_PATH && docker-compose pull && docker-compose down && docker-compose up -d"
 
 deploy_prod:
   variables:
