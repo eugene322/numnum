@@ -5,8 +5,8 @@ ENV PYTHONUNBUFFERED=1 COLUMNS=200 TZ=Asia/Almaty
 ADD ./src/requirements.txt ./src/dev_requirements.txt /src/
 
 RUN \
-#    sed -i "s/dl-cdn.alpinelinux.org/mirror.neolabs.kz/g" \
-#    /etc/apk/repositories && \
+    sed -i "s/dl-cdn.alpinelinux.org/mirror.neolabs.kz/g" \
+    /etc/apk/repositories && \
     apk update \
     && apk --no-cache add bash postgresql-dev \
 # Django translations
