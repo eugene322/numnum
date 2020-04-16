@@ -1,22 +1,34 @@
-FROM python:3.6.9-alpine3.10
+FROM python:3.8.1-alpine3.11
 
 ENV PYTHONUNBUFFERED=1 COLUMNS=200 TZ=Asia/Almaty
 
-COPY ./src /src
-WORKDIR /src
-# Add yandex alpine mirrors
-RUN echo http://mirror.yandex.ru/mirrors/alpine/v3.10/main > /etc/apk/repositories; \
-    echo http://mirror.yandex.ru/mirrors/alpine/v3.10/community >> /etc/apk/repositories && \
+ADD ./src/requirements.txt ./src/dev_requirements.txt /src/
+
+RUN \
+#    sed -i "s/dl-cdn.alpinelinux.org/mirror.neolabs.kz/g" \
+#    /etc/apk/repositories && \
+    apk update \
+    && apk --no-cache add bash postgresql-dev \
+# Django translations
+    gettext \
+# Add build dependencies
+    && apk --no-cache add --virtual .build-deps \
+    tzdata gcc musl-dev \
+# For git repos in requirements
+    git \
 # Set timezone
-    apk add tzdata && cp /usr/share/zoneinfo/Asia/Almaty /etc/localtime && \
-    echo "Asia/Almaty" > /etc/timezone && apk del tzdata && \
-# Add system dependencies
-    apk update && \
-    apk add bash postgresql-client gcc musl-dev postgresql-dev \
-    gettext libressl-dev curl-dev zlib-dev jpeg-dev && \
+    && ln -fs /usr/share/zoneinfo/Asia/Almaty /etc/localtime \
+    && echo "Asia/Almaty" > /etc/timezone \
+# Upgrade pip
+    && pip install --upgrade pip \
 # Add project dependencies
-    pip install --upgrade pip && pip install -U -r requirements.txt && \
-# Add dev dependencies
-    pip install -U -r requirements_dev.txt && \
-# Make entrypoint executable
-    chmod +x entrypoint.sh
+    && pip install \
+    --no-cache-dir -Ur /src/requirements.txt \
+    --no-cache-dir -Ur /src/dev_requirements.txt \
+# Remove build dependencies
+    && apk del .build-deps
+
+COPY ./src /src
+
+WORKDIR /src
+CMD ["/src/entrypoint.sh"]

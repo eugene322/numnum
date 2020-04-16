@@ -1,2 +1,7 @@
 [run]
-omit = manage.py, core/wsgi.py, core/celery.py, ../*migrations*
+omit =
+    manage.py
+    core/wsgi.py
+    core/asgi.py
+    core/celery.py
+    ../*migrations*

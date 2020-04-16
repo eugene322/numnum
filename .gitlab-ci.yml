@@ -1,69 +1,49 @@
-image: docker:latest
+image: tiangolo/docker-with-compose:latest
 stages:
   - build
+  - bandit
+  - safety
+  - mypy
   - test
-  - deploy
 
-services:
-  - docker:18.09.8-dind
 
 variables:
-  DOCKER_HOST: tcp://docker:2375/
-  DOCKER_DRIVER: overlay2
   REGISTRY_NAME: git.chocodev.kz:4567
   CONTAINER_IMAGE_NAME: git.chocodev.kz:4567/chocofood/seed
   CONTAINER_CURRENT_IMAGE_NAME: $CONTAINER_IMAGE_NAME:$CI_COMMIT_REF_SLUG
 
-
-.build_project: &build_project
+.build: &build
+  stage: build
   tags:
     - docker
-  stage: build
   script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $REGISTRY_NAME
     - docker build -t $CONTAINER_CURRENT_IMAGE_NAME .
     - docker push $CONTAINER_CURRENT_IMAGE_NAME
 
-build:
-  <<: *build_project
-
-.test_project: &test_project
+.test: &test
+  stage: test
   tags:
     - docker
-  stage: test
-  before_script:
-    - echo http://mirror.yandex.ru/mirrors/alpine/v3.10/main > /etc/apk/repositories
-    - echo http://mirror.yandex.ru/mirrors/alpine/v3.10/community >> /etc/apk/repositories
-    - apk add linux-headers gcc make libc-dev musl-dev libffi-dev openssl-dev python3-dev
-    - pip3 install docker-compose
   script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $REGISTRY_NAME
-    - cd deploy/test && docker-compose pull && docker-compose down
-    - docker-compose up --abort-on-container-exit && docker-compose down
+    - cd CI/pipelines && docker-compose -f $FILE down && docker-compose -f $FILE pull
+    - docker-compose -f $FILE up --abort-on-container-exit --remove-orphans && docker-compose -f $FILE down
+
+build:
+  <<: *build
 
 test:
-  <<: *test_project
-
-.deploy_project: &deploy_project
-  tags:
-    - docker
-  stage: deploy
-  before_script:
-#    - echo http://mirror.yandex.ru/mirrors/alpine/v3.10/main > /etc/apk/repositories
-#    - echo http://mirror.yandex.ru/mirrors/alpine/v3.10/community >> /etc/apk/repositories
-#    - 'which ssh-agent || ( apk update && apk add -qq openssh )'
-#    - eval $(ssh-agent -s) && echo "$SSH_PRIVATE_KEY" | ssh-add - && mkdir -p ~/.ssh
-#    - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
-  script:
-    - echo "deploy skipped"
-#    - scp -rp $LOCAL_PATH runner@$DEPLOY_HOST:$DEPLOY_PATH
-#    - ssh runner@$DEPLOY_HOST "cd $DEPLOY_PATH && docker-compose pull && docker-compose down && docker-compose up -d"
-
-deploy_prod:
   variables:
-    DEPLOY_HOST: "vbnm.gq"
-    DEPLOY_PATH: "/srv/askme"
-    LOCAL_PATH: "deploy/prod/*"
-  <<: *deploy_project
-  only:
-    - master
+    FILE: test.yml
+  <<: *test
+
+bandit:
+  variables:
+    FILE: bandit.yml
+  <<: *test
+
+safety:
+  variables:
+    FILE: safety.yml
+  <<: *test

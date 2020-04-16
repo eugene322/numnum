@@ -1,8 +1,0 @@
-django-debug-toolbar==2.0
-requests==2.21.0
-responses==0.10.6
-pytest==4.6.3
-pytest-django==3.4.8
-pytest-flake8==1.0.4
-pytest-cov==2.7.1
-pytest-xdist==1.29.0

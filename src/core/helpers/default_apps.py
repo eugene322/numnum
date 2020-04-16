@@ -1,8 +1,13 @@
 from typing import Tuple
 
-DEFAULT_APPS: Tuple = (
-    'django.contrib.admin', 'django.contrib.auth', 'django.contrib.contenttypes',
-    'django.contrib.sessions', 'django.contrib.messages',
-    'django.contrib.staticfiles', 'corsheaders',
-    'rest_framework', 'django_extensions', 'drf_yasg', 'silk', 'django_filters',
+DJANGO_APPS: Tuple[str, ...] = (
+    'django.contrib.admin', 'django.contrib.staticfiles',
+    'django.contrib.contenttypes', 'django.contrib.auth',
+    'django.contrib.messages', 'django.contrib.sessions',
 )
+SIDE_APPS: Tuple[str, ...] = (
+    'corsheaders', 'rest_framework', 'django_extensions',
+    'django_filters', 'django_fsm',
+)
+PROJECT_APPS: Tuple[str, ...] = ()
+DEFAULT_APPS: Tuple[str, ...] = DJANGO_APPS + SIDE_APPS + PROJECT_APPS

@@ -1,5 +1,5 @@
 from django.test import Client
-from rest_framework.response import Response
+from requests import Response
 
 
 def test_django(db, client: Client) -> None:

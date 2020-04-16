@@ -1,45 +1,56 @@
-version: '3'
+version: '3.7'
 
 services:
   postgres:
-    container_name: postgres
-    image: postgres:alpine
+    container_name: postgres_${CI_JOB_ID}
+    image: postgres:12.2-alpine
     logging:
       driver: none
+    networks:
+      - test
     environment:
       POSTGRES_DB: db
       POSTGRES_USER: user
       POSTGRES_PASSWORD: pass
 
   rabbitmq:
-    container_name: rabbitmq
-    image: rabbitmq:alpine
+    container_name: rabbitmq_${CI_JOB_ID}
+    image: rabbitmq:3.8.3-alpine
     logging:
       driver: none
+    networks:
+      - test
     environment:
       - RABBITMQ_DEFAULT_USER=user
       - RABBITMQ_DEFAULT_PASS=pass
 
+
   django:
-    container_name: django
+    container_name: django_${CI_JOB_ID}
     image: git.chocodev.kz:4567/chocofood/seed:${CI_COMMIT_REF_SLUG}
-    entrypoint: ./entrypoint.sh
-    volumes:
-      - ./django.test.env:/src/core/helpers/.env
+    env_file:
+      - ci.env
     depends_on:
       - postgres
       - rabbitmq
+    networks:
+      - test
     environment:
       MODE: TEST
 
   celery:
-    container_name: celery
+    container_name: celery_${CI_JOB_ID}
     image: git.chocodev.kz:4567/chocofood/seed:${CI_COMMIT_REF_SLUG}
-    entrypoint: ./entrypoint.sh
-    volumes:
-      - ./celery.test.env:/src/core/helpers/.env
+    env_file:
+      - ci.env
     depends_on:
       - postgres
       - rabbitmq
+    networks:
+      - test
     environment:
       MODE: CELERY
+
+networks:
+  test:
+    name: test_${CI_JOB_ID}

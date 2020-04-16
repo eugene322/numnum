@@ -12,6 +12,4 @@ In separate tab
 
 ``` $ docker-compose exec django bash ``` - get into django container
 
-``` $ pytest -v --cov . --cov-report term-missing --cov-fail-under 100 \ ```
-
-``` --flake8 -n 4 --no-migrations --reuse-db ``` - run all tests
+``` $ $test ``` - run all tests
