@@ -4,6 +4,7 @@ stages:
   - bandit
   - safety
   - mypy
+  - flake8
   - test
 
 
@@ -46,4 +47,14 @@ bandit:
 safety:
   variables:
     FILE: safety.yml
+  <<: *test
+
+mypy:
+  variables:
+    FILE: mypy.yml
+  <<: *test
+
+flake8:
+  variables:
+    FILE: flake8.yml
   <<: *test

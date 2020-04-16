@@ -1,0 +1,14 @@
+version: '3.7'
+
+services:
+  django:
+    container_name: django_${CI_JOB_ID}
+    image: git.chocodev.kz:4567/chocofood/seed:${CI_COMMIT_REF_SLUG}
+    networks:
+      - flake8
+    environment:
+      MODE: FLAKE8
+
+networks:
+  flake8:
+    name: flake8_${CI_JOB_ID}
