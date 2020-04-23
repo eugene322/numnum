@@ -1,3 +1,3 @@
-#Seed
+# Seed
 
-###Checkout to "django" branch for django project template
+### Checkout to "django" branch for django project template
