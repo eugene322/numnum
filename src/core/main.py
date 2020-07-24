@@ -5,7 +5,7 @@ from starlette.middleware.cors import CORSMiddleware
 
 from .settings import SENTRY_DSN
 
-main_app = FastAPI()
+main_app: FastAPI = FastAPI()
 main_app.add_middleware(
     middleware_class=CORSMiddleware,
     allow_origins=['*'], allow_credentials=True,
