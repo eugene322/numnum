@@ -58,6 +58,8 @@ var/
 
 # celery beat schedule file
 celerybeat-schedule
+celerybeat.pid
+
 
 # Installer logs
 pip-log.txt

@@ -1,0 +1,51 @@
+version: '3'
+
+services:
+  fastapi:
+    container_name: fastapi
+    build: ./
+    volumes:
+      - ./src:/src:rw
+      - ./.env:/src/core/.env
+    environment:
+      MODE: DEV
+      test: "pytest -v --cov . --cov-report term-missing
+      --cov-fail-under=100 --flake8 --color=yes -n 8"
+      outdated: pip list --outdated --format=columns
+      bandit: bandit -r .
+      safety: safety check
+      mypy: mypy .
+      flake8: flake8 .
+    ports:
+      - 8000:8000
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3.8.5-alpine
+    environment:
+      - RABBITMQ_DEFAULT_USER=user
+      - RABBITMQ_DEFAULT_PASS=pass
+    logging:
+      driver: none
+
+  celery_consumer:
+    container_name: celery_consumer
+    build: ./
+    volumes:
+      - ./src:/src:rw
+      - ./.env:/src/core/.env
+    environment:
+      MODE: CELERY_CONSUMER
+    depends_on:
+      - rabbitmq
+
+  celery_scheduler:
+    container_name: celery_scheduler
+    build: ./
+    volumes:
+      - ./src:/src:rw
+      - ./.env:/src/core/.env
+    environment:
+      MODE: CELERY_SCHEDULER
+    depends_on:
+      - rabbitmq

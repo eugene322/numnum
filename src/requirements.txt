@@ -1,0 +1,7 @@
+celery==4.4.6
+fastapi==0.60.1
+uvicorn==0.11.6
+pydantic[email]==1.6.1
+requests==2.24.0
+sentry-sdk==0.16.2
+setuptools==49.2.0
