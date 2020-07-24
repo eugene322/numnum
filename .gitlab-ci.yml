@@ -42,3 +42,9 @@ lint:
     FILE: lint.yml
     PROJECT: lint
   <<: *test
+
+test:
+  variables:
+    FILE: test.yml
+    PROJECT: test
+  <<: *test
