@@ -8,7 +8,7 @@ services:
       - ./src:/src:rw
       - ./.env:/src/core/.env
     environment:
-      PROCESS: DEV
+      PROCESS: DEV_FASTAPI
       test: "pytest -v --cov . --cov-report term-missing
       --cov-fail-under=100 --flake8 --color=yes --mypy -n 8"
       outdated: pip list --outdated --format=columns
@@ -28,24 +28,13 @@ services:
     logging:
       driver: none
 
-  celery_consumer:
-    container_name: celery_consumer
+  celery:
+    container_name: celery
     build: ./
     volumes:
       - ./src:/src:rw
       - ./.env:/src/core/.env
     environment:
-      PROCESS: CELERY_CONSUMER
-    depends_on:
-      - rabbitmq
-
-  celery_scheduler:
-    container_name: celery_scheduler
-    build: ./
-    volumes:
-      - ./src:/src:rw
-      - ./.env:/src/core/.env
-    environment:
-      PROCESS: CELERY_SCHEDULER
+      PROCESS: DEV_CELERY
     depends_on:
       - rabbitmq

@@ -29,24 +29,32 @@ case "$PROCESS" in
     pytest -v --cov . --cov-report term-missing --cov-fail-under=100 \
     --color=yes --mypy -n 4 -W error
     ;;
-"DEV")
+"DEV_FASTAPI")
     uvicorn core.main:app --reload --host 0.0.0.0 --port 8000
+    ;;
+"DEV_CELERY")
+    wait_for "${BROKER_HOST}" "${BROKER_PORT}"
+    celery -A core worker -B --loglevel=INFO --concurrency=1
     ;;
 "PRODUCTION")
     uvicorn core.main:app --host 0.0.0.0 --port 8000 \
     --proxy-headers --workers 5 # workers = (2*CPU)+1
     ;;
-"CELERY_SCHEDULER")
-    wait_for "${BROKER_HOST}" "${BROKER_PORT}"
-    celery -A core beat --loglevel=INFO
-    ;;
-"CELERY_CONSUMER")
-    wait_for "${BROKER_HOST}" "${BROKER_PORT}"
-    celery -A core worker --loglevel=INFO
-    ;;
 "CELERY")
     wait_for "${BROKER_HOST}" "${BROKER_PORT}"
-    celery -A core worker -B --loglevel=INFO --concurrency=1
+    case "$NODE" in
+    "SCHEDULER")
+        celery -A core beat --loglevel=INFO
+        ;;
+    "CONSUMER")
+        celery -A core worker --loglevel=INFO \
+        --concurrency=3 --max-tasks-per-child=2048
+        ;;
+    *)
+        echo "NO NODE SPECIFIED!"
+        exit 1
+        ;;
+    esac
     ;;
 *)
     echo "NO MODE SPECIFIED!"

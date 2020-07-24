@@ -37,7 +37,7 @@ services:
     networks:
       - test
     environment:
-      PROCESS: CELERY
+      PROCESS: DEV_CELERY
 
 networks:
   test:
