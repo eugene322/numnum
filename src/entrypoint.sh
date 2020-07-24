@@ -21,7 +21,7 @@ clear_old_files () {
 }
 clear_old_files
 populate_env_variables
-case "$MODE" in
+case "$PROCESS" in
 "LINT")
     mypy . && flake8 . && bandit -r . && safety check
     ;;
