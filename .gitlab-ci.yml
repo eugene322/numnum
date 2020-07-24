@@ -1,0 +1,44 @@
+image: tiangolo/docker-with-compose:latest
+stages:
+  - build
+  - lint
+  - test
+
+
+variables:
+  REGISTRY_NAME: docker-registry.choco.kz
+  CONTAINER_IMAGE_NAME: docker-registry.choco.kz/chocofood/seed
+  CONTAINER_CURRENT_IMAGE_NAME: $CONTAINER_IMAGE_NAME:$CI_COMMIT_REF_SLUG
+
+.build: &build
+  stage: build
+  tags:
+    - docker
+  script:
+    - mkdir -p ~/.docker && echo ${NEXUS_REGISTRY} | base64 -d > ~/.docker/config.json
+    - docker build -t $CONTAINER_CURRENT_IMAGE_NAME .
+    - docker push $CONTAINER_CURRENT_IMAGE_NAME
+
+.test: &test
+  stage: test
+  tags:
+    - docker
+  script:
+    - mkdir -p ~/.docker && echo ${NEXUS_REGISTRY} | base64 -d > ~/.docker/config.json
+    - cd CI/pipelines
+    - docker-compose -p $PROJECT -f $FILE down --remove-orphans
+    - docker-compose -p $PROJECT -f $FILE pull
+    - docker-compose -p $PROJECT -f $FILE up --abort-on-container-exit
+    - docker-compose -p $PROJECT -f $FILE down --remove-orphans
+  after_script:
+    - docker image prune --force
+    - docker volume prune --force
+
+build:
+  <<: *build
+
+lint:
+  variables:
+    FILE: lint.yml
+    PROJECT: lint
+  <<: *test
