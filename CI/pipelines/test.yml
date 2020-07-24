@@ -1,0 +1,44 @@
+version: '3.7'
+
+services:
+
+  rabbitmq:
+    container_name: rabbitmq_${CI_JOB_ID}
+    image: rabbitmq:3.8.5-alpine
+    logging:
+      driver: none
+    networks:
+      - test
+    environment:
+      - RABBITMQ_DEFAULT_USER=user
+      - RABBITMQ_DEFAULT_PASS=pass
+
+  fastapi:
+    container_name: fastapi_${CI_JOB_ID}
+    image: docker-registry.choco.kz/chocofood/seed:${CI_COMMIT_REF_SLUG}
+    env_file:
+      - ci.env
+    depends_on:
+      - rabbitmq
+    networks:
+      - test
+    environment:
+      PROCESS: TEST
+
+  celery:
+    container_name: celery_${CI_JOB_ID}
+    image: docker-registry.choco.kz/chocofood/seed:${CI_COMMIT_REF_SLUG}
+    logging:
+      driver: none
+    env_file:
+      - ci.env
+    depends_on:
+      - rabbitmq
+    networks:
+      - test
+    environment:
+      PROCESS: CELERY
+
+networks:
+  test:
+    name: test_${CI_JOB_ID}
