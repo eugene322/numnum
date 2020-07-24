@@ -10,7 +10,7 @@ services:
     environment:
       PROCESS: DEV
       test: "pytest -v --cov . --cov-report term-missing
-      --cov-fail-under=100 --flake8 --color=yes -n 8"
+      --cov-fail-under=100 --flake8 --color=yes --mypy -n 8"
       outdated: pip list --outdated --format=columns
       bandit: bandit -r .
       safety: safety check
