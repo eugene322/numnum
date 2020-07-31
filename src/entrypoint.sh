@@ -57,7 +57,7 @@ case "$PROCESS" in
     esac
     ;;
 *)
-    echo "NO MODE SPECIFIED!"
+    echo "NO PROCESS SPECIFIED!"
     exit 1
     ;;
 esac
