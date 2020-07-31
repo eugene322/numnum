@@ -2,9 +2,11 @@ from typing import Dict
 
 from fastapi import APIRouter
 
-value_router = APIRouter()
+item_router = APIRouter()
+
+ITEM_URL: str = '/items/'
 
 
-@value_router.get(path='/values/')
-def values() -> Dict:
+@item_router.get(path=ITEM_URL)
+def read_items() -> Dict:
     return {}
