@@ -36,7 +36,7 @@ case "$PROCESS" in
     wait_for "${BROKER_HOST}" "${BROKER_PORT}"
     celery -A core worker -B --loglevel=INFO --concurrency=1
     ;;
-"PRODUCTION")
+"FASTAPI")
     uvicorn core.main:app --host 0.0.0.0 --port 8000 \
     --proxy-headers --workers 5 # workers = (2*CPU)+1
     ;;
