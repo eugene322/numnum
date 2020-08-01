@@ -38,7 +38,8 @@ case "$PROCESS" in
     ;;
 "FASTAPI")
     uvicorn core.main:app --host 0.0.0.0 --port 8000 \
-    --proxy-headers --workers 5 # workers = (2*CPU)+1
+    --proxy-headers --workers 8 --limit-max-requests 2048
+    # workers = (2*CPU)+1
     ;;
 "CELERY")
     wait_for "${BROKER_HOST}" "${BROKER_PORT}"
