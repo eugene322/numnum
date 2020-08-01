@@ -12,8 +12,7 @@ variables:
 
 .build: &build
   stage: build
-  tags:
-    - docker
+
   script:
     - mkdir -p ~/.docker && echo ${NEXUS_REGISTRY} | base64 -d > ~/.docker/config.json
     - docker build -t $CONTAINER_CURRENT_IMAGE_NAME .
@@ -21,8 +20,7 @@ variables:
 
 .test: &test
   stage: test
-  tags:
-    - docker
+
   script:
     - mkdir -p ~/.docker && echo ${NEXUS_REGISTRY} | base64 -d > ~/.docker/config.json
     - cd CI/pipelines
