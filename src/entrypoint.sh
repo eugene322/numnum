@@ -27,7 +27,7 @@ case "$PROCESS" in
     ;;
 "TEST")
     pytest -v --cov . --cov-report term-missing --cov-fail-under=100 \
-    --color=yes --mypy -n 4 -W error
+    --color=yes --mypy -n 1 -W error
     ;;
 "DEV_FASTAPI")
     uvicorn core.main:app --reload --host 0.0.0.0 --port 8000
