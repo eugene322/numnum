@@ -12,6 +12,8 @@ variables:
 
 .build: &build
   stage: build
+  tags:
+    - docker
 
   script:
     - mkdir -p ~/.docker && echo ${NEXUS_REGISTRY} | base64 -d > ~/.docker/config.json
@@ -20,6 +22,9 @@ variables:
 
 .test: &test
   stage: test
+  tags:
+    - docker
+  
 
   script:
     - mkdir -p ~/.docker && echo ${NEXUS_REGISTRY} | base64 -d > ~/.docker/config.json
