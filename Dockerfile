@@ -30,4 +30,4 @@ RUN \
 COPY ./src /src
 
 WORKDIR /src
-CMD ["/src/entrypoint.sh"]
+CMD ["./entrypoint.sh"]
