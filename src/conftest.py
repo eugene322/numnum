@@ -1,1 +1,5 @@
-from common.tests.fixtures import *  # noqa
+from typing import Tuple
+
+pytest_plugins: Tuple = (
+    'common.tests.fixtures',
+)
