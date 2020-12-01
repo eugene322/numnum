@@ -49,7 +49,7 @@ case "$PROCESS" in
         ;;
     "CONSUMER")
         celery -A core worker --loglevel=INFO \
-        --concurrency=3 --max-tasks-per-child=2048
+        --concurrency=12 --max-tasks-per-child=2048
         ;;
     *)
         echo "NO NODE SPECIFIED!"

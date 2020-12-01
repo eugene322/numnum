@@ -29,6 +29,7 @@ variables:
   script:
     - mkdir -p ~/.docker && echo ${NEXUS_REGISTRY} | base64 -d > ~/.docker/config.json
     - cd CI/pipelines
+    - docker system prune --volumes --force
     - docker-compose -p $PROJECT -f $FILE down --remove-orphans
     - docker-compose -p $PROJECT -f $FILE pull
     - docker-compose -p $PROJECT -f $FILE up --abort-on-container-exit
