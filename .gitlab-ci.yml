@@ -1,4 +1,3 @@
-image: tiangolo/docker-with-compose:latest
 stages:
   - build
   - lint
@@ -14,41 +13,34 @@ variables:
   stage: build
   tags:
     - docker
-
   script:
     - mkdir -p ~/.docker && echo ${NEXUS_REGISTRY} | base64 -d > ~/.docker/config.json
     - docker build -t $CONTAINER_CURRENT_IMAGE_NAME .
     - docker push $CONTAINER_CURRENT_IMAGE_NAME
 
-.test: &test
-  stage: test
-  tags:
-    - docker
-  
-
-  script:
-    - mkdir -p ~/.docker && echo ${NEXUS_REGISTRY} | base64 -d > ~/.docker/config.json
-    - cd CI/pipelines
-    - docker system prune --volumes --force
-    - docker-compose -p $PROJECT -f $FILE down --remove-orphans
-    - docker-compose -p $PROJECT -f $FILE pull
-    - docker-compose -p $PROJECT -f $FILE up --abort-on-container-exit
-    - docker-compose -p $PROJECT -f $FILE down --remove-orphans
-  after_script:
-    - docker image prune --force
-    - docker volume prune --force
-
 build:
   <<: *build
 
 lint:
+  stage: test
+  tags:
+    - docker
+  retry: 2
+  image: ${CONTAINER_CURRENT_IMAGE_NAME}
   variables:
-    FILE: lint.yml
-    PROJECT: lint
-  <<: *test
+    PROCESS: LINT
+  script:
+    - mkdir -p ~/.docker && echo ${NEXUS_REGISTRY} | base64 -d > ~/.docker/config.json
+    - cp ci_cd/ci/ci.env /src/core/.env && cd src && bash entrypoint.sh
 
 test:
+  stage: test
+  tags:
+    - docker
+  retry: 2
+  image: ${CONTAINER_CURRENT_IMAGE_NAME}
   variables:
-    FILE: test.yml
-    PROJECT: test
-  <<: *test
+    PROCESS: TEST
+  script:
+    - mkdir -p ~/.docker && echo ${NEXUS_REGISTRY} | base64 -d > ~/.docker/config.json
+    - cp ci_cd/ci/ci.env /src/core/.env && cd src && bash entrypoint.sh
