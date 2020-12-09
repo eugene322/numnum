@@ -23,7 +23,7 @@ clear_old_files
 populate_env_variables
 case "$PROCESS" in
 "LINT")
-    mypy . && flake8 . && bandit -r . && safety check
+    mypy . && flake8 . && bandit --exclude tests -r . && safety check
     ;;
 "TEST")
     pytest -v --cov . --cov-report term-missing --cov-fail-under=100 \

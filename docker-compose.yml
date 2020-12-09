@@ -12,7 +12,7 @@ services:
       test: "pytest -v --cov . --cov-report term-missing
       --cov-fail-under=100 --flake8 --color=yes --mypy -n 1"
       outdated: pip list --outdated --format=columns
-      bandit: bandit -r .
+      bandit: bandit --exclude tests -r .
       safety: safety check
       mypy: mypy .
       flake8: flake8 .
@@ -21,7 +21,7 @@ services:
 
   rabbitmq:
     container_name: rabbitmq
-    image: rabbitmq:3.8.5-alpine
+    image: rabbitmq:3.8.9-alpine
     environment:
       - RABBITMQ_DEFAULT_USER=user
       - RABBITMQ_DEFAULT_PASS=pass
