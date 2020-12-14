@@ -6,7 +6,7 @@ stages:
 
 variables:
   REGISTRY_NAME: docker-registry.choco.kz
-  CONTAINER_IMAGE_NAME: docker-registry.choco.kz/chocofood/seed
+  CONTAINER_IMAGE_NAME: docker-registry.choco.kz/chocofood/$CI_PROJECT_NAME
   CONTAINER_CURRENT_IMAGE_NAME: $CONTAINER_IMAGE_NAME:$CI_COMMIT_REF_SLUG
 
 .build: &build
