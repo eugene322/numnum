@@ -1,10 +1,8 @@
 from fastapi import FastAPI
-from sentry_sdk import init
 from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
 from starlette.middleware.cors import CORSMiddleware
 
 from common.views import item_router
-from .settings import SENTRY_DSN
 
 main_app: FastAPI = FastAPI()
 main_app.add_middleware(
@@ -16,5 +14,4 @@ main_app.include_router(
     prefix='/api', router=item_router,
 )
 
-init(dsn=SENTRY_DSN)
 app = SentryAsgiMiddleware(app=main_app)

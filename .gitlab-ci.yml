@@ -1,6 +1,6 @@
+image: docker-proxy.choco.kz/docker:20.10.0
 stages:
   - build
-  - lint
   - test
 
 
@@ -28,7 +28,6 @@ lint:
   variables:
     PROCESS: LINT
   script:
-    - mkdir -p ~/.docker && echo ${NEXUS_REGISTRY} | base64 -d > ~/.docker/config.json
     - cp ci_cd/ci/ci.env /src/core/.env && cd src && bash entrypoint.sh
 
 test:
@@ -40,5 +39,4 @@ test:
   variables:
     PROCESS: TEST
   script:
-    - mkdir -p ~/.docker && echo ${NEXUS_REGISTRY} | base64 -d > ~/.docker/config.json
     - cp ci_cd/ci/ci.env /src/core/.env && cd src && bash entrypoint.sh
