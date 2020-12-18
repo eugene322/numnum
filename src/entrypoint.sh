@@ -41,21 +41,15 @@ case "$PROCESS" in
     --proxy-headers --workers 8 --limit-max-requests 2048
     # workers = (2*CPU)+1
     ;;
-"CELERY")
+"CELERY_SCHEDULER")
     wait_for "${BROKER_HOST}" "${BROKER_PORT}"
-    case "$NODE" in
-    "SCHEDULER")
-        celery -A core beat --loglevel=INFO
-        ;;
-    "CONSUMER")
-        celery -A core worker --loglevel=INFO \
-        --concurrency=12 --max-tasks-per-child=2048
-        ;;
-    *)
-        echo "NO NODE SPECIFIED!"
-        exit 1
-        ;;
-    esac
+    celery -A core beat --loglevel=INFO
+    ;;
+"CELERY_CONSUMER")
+    wait_for "${DB_HOST}" "${DB_PORT}"
+    wait_for "${BROKER_HOST}" "${BROKER_PORT}"
+    celery -A core worker --loglevel=INFO \
+    --concurrency=12 --max-tasks-per-child=2048
     ;;
 *)
     echo "NO PROCESS SPECIFIED!"

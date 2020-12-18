@@ -16,27 +16,24 @@ variables:
     - docker build -t $CONTAINER_CURRENT_IMAGE_NAME .
     - docker push $CONTAINER_CURRENT_IMAGE_NAME
 
+.test: &test
+  stage: test
+  retry: 2
+  tags:
+    - docker
+  image: ${CONTAINER_CURRENT_IMAGE_NAME}
+  script:
+    - cp ci_cd/ci/ci.env /src/core/.env && cd src && bash entrypoint.sh
+
 build:
   <<: *build
 
 lint:
-  stage: test
-  tags:
-    - docker
-  retry: 2
-  image: ${CONTAINER_CURRENT_IMAGE_NAME}
   variables:
     PROCESS: LINT
-  script:
-    - cp ci_cd/ci/ci.env /src/core/.env && cd src && bash entrypoint.sh
+  <<: *test
 
 test:
-  stage: test
-  tags:
-    - docker
-  retry: 2
-  image: ${CONTAINER_CURRENT_IMAGE_NAME}
   variables:
     PROCESS: TEST
-  script:
-    - cp ci_cd/ci/ci.env /src/core/.env && cd src && bash entrypoint.sh
+  <<: *test
