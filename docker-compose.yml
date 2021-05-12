@@ -6,36 +6,7 @@ services:
     build: ./
     volumes:
       - ./src:/src:rw
-      - ./.env:/src/core/.env
     environment:
       PROCESS: DEV_FASTAPI
-      test: "pytest -v --cov . --cov-report term-missing
-      --cov-fail-under=100 --flake8 --color=yes --mypy -n 1"
-      outdated: pip list --outdated --format=columns
-      bandit: bandit --exclude tests -r .
-      safety: safety check
-      mypy: mypy .
-      flake8: flake8 .
     ports:
       - 8000:8000
-
-  rabbitmq:
-    container_name: rabbitmq
-    image: rabbitmq:3.8.9-alpine
-    environment:
-      - RABBITMQ_DEFAULT_VHOST=vhost
-      - RABBITMQ_DEFAULT_USER=user
-      - RABBITMQ_DEFAULT_PASS=pass
-    logging:
-      driver: none
-
-  celery:
-    container_name: celery
-    build: ./
-    volumes:
-      - ./src:/src:rw
-      - ./.env:/src/core/.env
-    environment:
-      PROCESS: DEV_CELERY
-    depends_on:
-      - rabbitmq

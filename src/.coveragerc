@@ -1,4 +1,0 @@
-[run]
-omit =
-    core/main.py
-    core/celery.py
