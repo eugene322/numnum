@@ -1,5 +1,4 @@
 # NUMNUM - test project for Elastoo
----
 ### Запуск проекта:
 $ docker-compose up
 ---
